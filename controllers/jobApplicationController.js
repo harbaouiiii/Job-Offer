@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
+const Grid = require("gridfs-stream");
 
 const Job = require("../models/jobModel");
 const JobApplication = require("../models/jobApplication");
-const { handleResumeUpload } = require("../utils/uploadResume");
 
 const conn = mongoose.connection;
 Grid.mongo = mongoose.mongo;
 const gfs = Grid(conn.db);
 
-exports.applyToJob = async (req, req) => {
+exports.applyToJob = async (req, res) => {
     const jobApplicationData = req.body;
 
     if (Object.keys(jobApplicationData).length === 0) {
@@ -33,7 +33,12 @@ exports.applyToJob = async (req, req) => {
 
         await jobApp
             .save()
-            .then(data => res.send(data))
+            .then(async data => {
+                const user = jobApp.candidate;
+                user.applications.push(jobApp);
+                await user.save();
+                res.send(data);
+            })
             .catch((err) => res.status(500).send(
                 {
                     message: err.message || "Something went wrong while saving your application!"
