@@ -10,4 +10,5 @@ const ConnectDB = () => {
     .catch((err) => console.error(err));
 };
 
+
 module.exports = ConnectDB;

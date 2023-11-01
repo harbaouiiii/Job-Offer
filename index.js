@@ -10,8 +10,8 @@ const expressSwagger = require('express-swagger-generator')(app);
 expressSwagger({
     swaggerDefinition: {
       info: {
-        title: 'Book Library API',
-        description: 'Book Library API Documentation',
+        title: 'Job Offer API',
+        description: 'Job Offer API Documentation',
         version: '1.0.0',
       },
       host: 'localhost:5555', 
@@ -25,5 +25,5 @@ expressSwagger({
 
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () =>
-  console.log(`server listening at port ${PORT} `)
+  console.log(`Server listening at port ${PORT} `)
 );

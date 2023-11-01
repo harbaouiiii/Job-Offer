@@ -1,10 +1,4 @@
 const multer = require("multer");
-const Grid = require("gridfs-stream");
-const mongoose = require("mongoose");
-
-const conn = mongoose.connection;
-Grid.mongo = mongoose.mongo;
-const gfs = Grid(conn.db)
 
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -22,8 +16,9 @@ const handleResumeUpload = (req, res, next) => {
                 error: 'Internal server error!'
             })
         }
+        req.resumeData = req.file.buffer.toString("base64");
         next();
     });
 }
 
-module.exports = { handleResumeUpload };
+module.exports = handleResumeUpload;
