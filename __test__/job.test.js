@@ -17,7 +17,7 @@ describe("Job", () => {
         await mongoose.connect(mongoServer.getUri());
 
         const mockUser = {
-            _id: new mongoose.Types.ObjectId(), // Generate a new ObjectId
+            _id: new mongoose.Types.ObjectId(),
             email: "test@example.com",
             password: "123456789"
         };
@@ -49,14 +49,6 @@ describe("Job", () => {
     });
 
     test("should create a job", async () => {
-        const user = {
-            firstName: "Mohamed",
-            lastName: "HARBAOUI",
-            email: "harbeouimohamed@gmail.com",
-            role: "CANDIDATE",
-            password: "123456789",
-            dateOfBirth: Date.UTC(1997, 7, 16)
-        }
         const job = {
             name: "Software Developer",
             description: "We are looking for a skilled software developer...",
@@ -64,7 +56,7 @@ describe("Job", () => {
             location: "Tunisia",
             salary: 5000,
             contract: "CDI",
-            createdBy: user
+            createdBy: authToken._id
         };
 
         await request(app)
