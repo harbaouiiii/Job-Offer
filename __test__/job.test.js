@@ -24,7 +24,7 @@ describe("Job", () => {
             email: "harbeouimohamed@gmail.com",
             password: "123456789",
             dateOfBirth: Date.UTC(1997, 6, 16),
-            role: "RECRUTER"
+            role: "ADMIN"
         };
 
         await request(app)
