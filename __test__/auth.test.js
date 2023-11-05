@@ -25,7 +25,7 @@ describe("Authentication | Unit Test", () => {
             lastName: "HARBAOUI",
             email: "harbeouimohamed@gmail.com",
             password: "123456789",
-            dateOfBirth: Date.UTC(1997, 7, 16),
+            dateOfBirth: Date.UTC(1997, 6, 16),
             role: "CANDIDATE"
         };
 

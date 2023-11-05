@@ -5,26 +5,34 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const { createServer } = require("../utils/serverUtils");
+const User = require("../models/userModel");
 
 const app = createServer();
 
 describe("Job", () => {
     jest.setTimeout(30000);
     let authToken;
+    let newUser;
 
     beforeAll(async () => {
         const mongoServer = await MongoMemoryServer.create();
         await mongoose.connect(mongoServer.getUri());
 
-        const mockUser = {
-            _id: new mongoose.Types.ObjectId(),
-            email: "test@example.com",
-            password: "123456789"
+        newUser = {
+            firstName: "Mohamed",
+            lastName: "HARBAOUI",
+            email: "harbeouimohamed@gmail.com",
+            password: "123456789",
+            dateOfBirth: Date.UTC(1997, 6, 16),
+            role: "RECRUTER"
         };
 
-        authToken = jwt.sign({ id: mockUser._id }, process.env.JWT_SECRET, {
-            expiresIn: process.env.JWT_EXPIRE
-        });
+        await request(app)
+            .post("/api/register")
+            .send(newUser)
+            .then(response => {
+                authToken = response.body.token
+            });
     });
 
     afterAll(async () => {
@@ -43,7 +51,7 @@ describe("Job", () => {
     test("should not create an empty job", async () => {
         await request(app)
             .post("/api/job")
-            .set('Authorization', `Bearer ${authToken}`)
+            .set({ authorization: `Bearer ${authToken}` })
             .send({})
             .expect(400);
     });
@@ -56,15 +64,16 @@ describe("Job", () => {
             location: "Tunisia",
             salary: 5000,
             contract: "CDI",
-            createdBy: authToken._id
+            createdBy: newUser
         };
 
         await request(app)
             .post("/api/job")
-            .set('Authorization', `Bearer ${authToken}`)
             .send(job)
             .expect(200)
+            .set({ authorization: `Bearer ${authToken}` })
             .then((response) => {
+                console.log(response.body.createdBy);
                 expect(response.body).toBeTruthy();
                 expect(response.body.name).toBe(job.name);
                 expect(response.body.description).toBe(job.description);
@@ -72,7 +81,12 @@ describe("Job", () => {
                 expect(response.body.location).toBe(job.location);
                 expect(response.body.salary).toBe(job.salary);
                 expect(response.body.contract).toBe(job.contract);
-                expect(response.body.createdBy).toBe(job.createdBy);
+                expect(response.body.createdBy.firstName).toBe(job.createdBy.firstName);
+                expect(response.body.createdBy.lastName).toBe(job.createdBy.lastName);
+                expect(response.body.createdBy.email).toBe(job.createdBy.email);
+                expect(new Date(response.body.createdBy.dateOfBirth)).toBeInstanceOf(Date);
+                expect(Date.parse(response.body.createdBy.dateOfBirth)).toBe(job.createdBy.dateOfBirth);
+                expect(response.body.createdBy.role).toBe(job.createdBy.role);
             });
     });
 
